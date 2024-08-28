@@ -9,10 +9,7 @@ export function Header() {
             <nav className={styles.nav}>
 							<Link href="/">
 								<h1 className={styles.logo}>
-									Na
-									<span>(</span>
-									Tasks<span>)</span>
-									<span>+</span>
+									Na<span>(</span>Tasks<span>)</span><span>+</span>
 								</h1>	
 							</Link>
 
