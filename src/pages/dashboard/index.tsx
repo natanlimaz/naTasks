@@ -8,7 +8,7 @@ export default function Dashboard() {
         <Head>
 					<title>Meu painel de tarefas</title>
 				</Head>
-
+        
 				<h1>Pagina Painel</h1>
       </div>
     );
