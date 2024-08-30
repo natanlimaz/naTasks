@@ -30,6 +30,7 @@
 
 .checkboxArea {
     margin: 14px 0;
+    display: flex;
 }
 
 .checkbox {
