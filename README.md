@@ -9,7 +9,8 @@ GOOGLE_CLIENT_ID=seu_client_id_aqui
 GOOGLE_CLIENT_SECRET=seu_client_secret_aqui
 
 # URL para NextAuth
-NEXTAUTH_URL=http://localhost:3000/ (mude para sua url)
+# Mude para sua url
+NEXTAUTH_URL=http://localhost:3000/
 
 # Chave Secreta para JWT
 JWT_SECRET=sua_jwt_secret_aqui
@@ -24,5 +25,6 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=seu_firebase_messaging_sender_id_aqui
 NEXT_PUBLIC_FIREBASE_APP_ID=seu_firebase_app_id_aqui
 
 # URL Pública
-NEXT_PUBLIC_URL=http://localhost:3000 (mude para sua url)
+# Mude para sua url
+NEXT_PUBLIC_URL=http://localhost:3000
 ```
