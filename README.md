@@ -14,7 +14,6 @@ NEXTAUTH_URL=http://localhost:3000/ (mude para sua url)
 # Chave Secreta para JWT
 JWT_SECRET=sua_jwt_secret_aqui
 
-
 # Configuração do Firebase
 # Verifique a explicação na documentação: https://firebase.google.com/docs/web/setup?hl=pt
 NEXT_PUBLIC_FIREBASE_API_KEY=sua_firebase_api_key_aqui
