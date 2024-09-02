@@ -5,9 +5,18 @@ import styles from "./styles.module.css";
 import { GetServerSideProps } from "next";
 
 import { db } from "@/services/firebaseConnection";
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, where, getDocs, query } from "firebase/firestore";
 
 import { Textarea } from "@/components/textarea";
+
+type CommentProps = {
+    id: string;
+    comment: string;
+    name: string;
+    photo: string;
+    taskId: string;
+    user: string;
+}
 
 type TaskProps = {
     item: {
@@ -16,14 +25,16 @@ type TaskProps = {
         created: string;
         task: string;
         public: boolean;
-    }
+    },
+    allComments: CommentProps[]
 }
 
-export default function Task({ item }: TaskProps) {
+export default function Task({ item, allComments }: TaskProps) {
 
     const { data: session } = useSession();
 
     const [input, setInput] = useState("");
+    const [comments, setComments] = useState<CommentProps[]>(allComments || []);
 
     async function handleComment(event: FormEvent) {
         event.preventDefault();
@@ -78,6 +89,20 @@ export default function Task({ item }: TaskProps) {
                     </button>
                 </form>
             </section>
+            
+            <section className={styles.commentsContainer}>
+                <h2>Todos os comentários</h2>
+                {comments.length === 0 && (
+                    <span>Nenhum comentário foi encontrado!</span>
+                )}
+
+                {comments.map((item) => (
+                    <article className={styles.comment} key={item.id}>
+                        <p>{item.comment}</p>
+                    </article>
+                ))}
+            </section>
+            
         </div>
     );
 }
@@ -85,9 +110,23 @@ export default function Task({ item }: TaskProps) {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     
     const id = params?.id as string;
-
     const docRef = doc(db, "tasks", id);
-    
+
+    const queryRef = query(collection(db, "comments"), where("taskId", "==", id));
+    const snapshotComments = await getDocs(queryRef);
+
+    let allComments: CommentProps[] = [];
+    snapshotComments.forEach((doc) => {
+        allComments.push({
+            id: doc.id,
+            comment: doc.data().comment,
+            name: doc.data().name,
+            photo: doc.data().photo,
+            taskId: doc.data().taskId,
+            user: doc.data().user
+        })
+    })
+
     const snapshot = await getDoc(docRef);
 
     if(snapshot.data() === undefined) {
@@ -120,7 +159,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
     return {
         props: {
-            item: task
+            item: task,
+            allComments: allComments
         }
     }
 }
