@@ -29,8 +29,15 @@ export function Header() {
           <button 
             className={styles.loginButton}
             onClick={() => signOut()}
-          >
-            Olá {session?.user?.name}
+          > 
+            {session?.user && (
+              <img 
+                src={session.user.image as string}
+                alt="Foto de perfil" 
+                className={styles.profilePhoto}
+              />
+            )}
+            {session?.user?.name}
           </button>
         ) : (
           <button 

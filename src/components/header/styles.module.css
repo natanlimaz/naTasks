@@ -38,6 +38,11 @@
   border: 1.5px solid #fff;
   cursor: pointer;
   transition: all 0.4s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .loginButton:hover {
@@ -58,4 +63,10 @@
   padding: 4px 14px;
   border-radius: 4px;
   margin: 0 14px;
+}
+
+.profilePhoto {
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
 }
