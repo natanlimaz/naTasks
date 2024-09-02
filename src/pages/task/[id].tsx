@@ -11,10 +11,10 @@ import { Textarea } from "@/components/textarea";
 
 type TaskProps = {
     item: {
-        id: string;
+        taskId: string;
         user: string;
         created: string;
-        taskId: string;
+        task: string;
         public: boolean;
     }
 }
