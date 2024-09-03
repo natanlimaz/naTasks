@@ -37,7 +37,7 @@ export function Header() {
                 className={styles.profilePhoto}
               />
             )}
-            {session?.user?.name}
+            {session?.user?.name?.split(' ')[0]}
           </button>
         ) : (
           <button 
