@@ -5,9 +5,10 @@ import styles from "./styles.module.css";
 import { GetServerSideProps } from "next";
 
 import { db } from "@/services/firebaseConnection";
-import { doc, getDoc, collection, addDoc, where, getDocs, query } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, where, getDocs, query, deleteDoc } from "firebase/firestore";
 
 import { Textarea } from "@/components/textarea";
+import { FaTrash } from "react-icons/fa";
 
 type CommentProps = {
     id: string;
@@ -53,7 +54,31 @@ export default function Task({ item, allComments }: TaskProps) {
                 taskId: item?.taskId,
             });
 
+            const data: CommentProps = {
+                id: docRef.id,
+                comment: input,
+                user: session?.user?.email,
+                name: session?.user?.name,
+                photo: session?.user?.image as string,
+                taskId: item?.taskId
+            }
+
+            setComments((oldItems) => [...oldItems, data])
+
             setInput("");
+        }
+        catch(error) {
+            console.log(error);
+        }
+    }
+
+    async function handleDeleteComment(id: string) {
+        try {
+            const docRef = doc(db, "comments", id);
+            await deleteDoc(docRef);
+
+            const filteredComments = comments.filter((item) => item.id !== id);
+            setComments(filteredComments);
         }
         catch(error) {
             console.log(error);
@@ -98,6 +123,25 @@ export default function Task({ item, allComments }: TaskProps) {
 
                 {comments.map((item) => (
                     <article className={styles.comment} key={item.id}>
+                        <div className={styles.headComment}>
+                            <label className={styles.commentsLabel}>
+                                <img 
+                                    className={styles.photoComment}
+                                    src={item.photo} 
+                                    alt="Foto de perfil de comentário" 
+                                />
+                                {item.name}
+                            </label>
+                            {session?.user?.email === item.user && (
+                                <button className={styles.buttonTrash}>
+                                    <FaTrash 
+                                        size={18}
+                                        color="#ea3140"
+                                        onClick={() => handleDeleteComment(item.id)}
+                                    />
+                                </button>
+                            )}
+                        </div>
                         <p>{item.comment}</p>
                     </article>
                 ))}
