@@ -9,7 +9,7 @@ import { FiShare2 } from "react-icons/fi"
 import { FaTrash } from "react-icons/fa"
 
 import { db } from "@/services/firebaseConnection";
-import { collection, addDoc, getDocs, query, orderBy, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, orderBy, where, onSnapshot, deleteDoc, doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 
 type DashboardProps = {
@@ -58,9 +58,30 @@ export default function Dashboard({ user }: DashboardProps) {
     
   }
 
+  async function handleDeleteCommentsFromTask(id: string) {
+      const commentsDeleteRef = doc(db, "comments", id)
+      await deleteDoc(commentsDeleteRef); 
+  }
+
   async function handleDeleteTask(id: string) {
     const docRef = doc(db, "tasks", id);
 
+    // pegando a tarefa que quero excluir para verificar se ela é pública
+    const taskDoc = await getDoc(docRef);
+    const taskData = taskDoc.data();
+
+    // Removendo comentários das tarefas públicas excluidas
+    if(taskData?.public) {
+      const commentsRef = collection(db, "comments");
+      const queryComment = query(commentsRef, where("taskId", "==", id));
+      const snapshotComments = await getDocs(queryComment);
+      snapshotComments.forEach(async (item) => {
+        handleDeleteCommentsFromTask(item.id);
+      });
+    }
+    
+
+    // Por fim excui a tarefa
     await deleteDoc(docRef);
   }
 
@@ -119,11 +140,12 @@ export default function Dashboard({ user }: DashboardProps) {
               <div className={styles.checkboxArea}>
                 <input
                   type="checkbox"
+                  id="checkbox"
                   className={styles.checkbox} 
                   checked={publicTask}
                   onChange={ handleChangePublic }
                 />
-                <label>Deixar tarefa pública?</label>
+                <label htmlFor="checkbox">Deixar tarefa pública?</label>
               </div>
 
               <button className={styles.button} type="submit">
@@ -137,6 +159,10 @@ export default function Dashboard({ user }: DashboardProps) {
 
         <section className={styles.taskContainer}>
           <h1>Minhas tarefas</h1>
+
+          {tasks.length === 0 && (
+            <span>Você não possui tarefas cadastradas!</span>
+          )}
 
           {tasks.map((taskItem) => (
             <article className={styles.task} key={taskItem.id}>
